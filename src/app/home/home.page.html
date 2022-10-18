@@ -1,0 +1,46 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-title>
+            Ionic Blank
+        </ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-button (click)="selectAndEncodeVideo()">
+        <ion-label>Test exec</ion-label>
+    </ion-button>
+
+    <ion-button (click)="selectAndProbeVideo()">
+        <ion-label>Test probe</ion-label>
+    </ion-button>
+
+    <ion-button (click)="selectFromGalleryAndEncodeVideo()">
+        <ion-label>Test exec from gallery</ion-label>
+    </ion-button>
+
+    <ion-button (click)="selectFromGalleryAndProbeVideo()">
+        <ion-label>Test probe from gallery</ion-label>
+    </ion-button>
+
+    <!--  <picture>-->
+    <!--    <source srcset="assets/Free_Test_Data.mp4" type="video/mp4">-->
+    <!--    <img src="assets/Free_Test_Data.mp4" alt="An image of an explosion.">-->
+    <!--  </picture>-->
+    <!--  <video autoplay loop muted controls playsinline width="100%" src="assets/Free_Test_Data.mp4" type="video/mp4" crossorigin="anonymous"></video>-->
+
+    <ion-card *ngIf="encodedSrc">
+        <ion-card-content>
+            <!-- {{ encodedSrc }}-->
+            <video autoplay controls muted playsinline width="100%">
+                <source [src]="encodedSrc" type="video/mp4">
+            </video>
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card *ngIf="videoInformation">
+        <ion-card-content>
+            {{ videoInformation | json }}
+        </ion-card-content>
+    </ion-card>
+</ion-content>

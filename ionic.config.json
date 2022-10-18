@@ -1,0 +1,7 @@
+{
+  "name": "cordova-plugin-ffmpeg-lab",
+  "integrations": {
+    "cordova": {}
+  },
+  "type": "angular"
+}
