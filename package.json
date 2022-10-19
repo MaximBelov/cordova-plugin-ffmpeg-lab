@@ -7,11 +7,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
     "build:android": "ionic cordova build android",
-    "build:ios": "ionic cordova build ios --debug --verbose",
+    "build:ios": "ionic cordova build ios --debug --verbose --source-map",
     "run:ios": "ionic cordova run ios --livereload --external --verbose",
     "run:ios:device": "ionic cordova run ios --device",
     "run:android": "ionic cordova run android --livereload --verbose"
