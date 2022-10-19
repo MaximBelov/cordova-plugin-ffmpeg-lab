@@ -1,4 +1,4 @@
-import { Component, Injector } from '@angular/core';
+import { Component, Injector, ChangeDetectorRef } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { LoadingController, Platform, AlertController } from '@ionic/angular';
 import { File } from '@awesome-cordova-plugins/file/ngx';
@@ -15,6 +15,7 @@ import { FFMpeg, VideoInformation } from 'awesome-cordova-plugins-ffmpeg/ngx';
 export class HomePage {
 
     public encodedSrc: SafeResourceUrl | String = '';
+    public showVideoPreview = false;
     public videoInformation: VideoInformation;
     public filesDirectory: string;
     public tempDirectory: string;
@@ -29,6 +30,7 @@ export class HomePage {
     private readonly webview = this.injector.get(WebView);
     private readonly camera = this.injector.get(Camera);
     private readonly sanitizer = this.injector.get(DomSanitizer);
+    private readonly changeDetectorRef = this.injector.get(ChangeDetectorRef);
 
     constructor(private injector: Injector) {
         this.platform
@@ -74,9 +76,13 @@ export class HomePage {
         await loader.present();
         await this.encodeVideo(inputFilePath, outputFilePath)
         await this.loadingController.dismiss(null, null, 'ffmpeg');
+        this.showVideoPreview = false;
+
         this.encodedSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
             this.webview.convertFileSrc(outputFilePath)
-        );
+        )
+        this.changeDetectorRef.detectChanges();
+        this.showVideoPreview = true;
     }
 
     /**
@@ -104,11 +110,15 @@ export class HomePage {
         }
         const loader = await this.loadingController.create({ id: 'ffmpeg' });
         await loader.present();
+        this.showVideoPreview = false;
         await this.encodeVideo(videoFileEntry.inputFilePath, videoFileEntry.outputFilePath)
         await this.loadingController.dismiss(null, null, 'ffmpeg');
         this.encodedSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
             this.webview.convertFileSrc(videoFileEntry.outputFilePath)
         );
+        this.changeDetectorRef.detectChanges();
+        this.showVideoPreview = true;
+
     }
 
     private async getVideoFromGallery() {
@@ -116,6 +126,7 @@ export class HomePage {
             sourceType: PictureSourceType.PHOTOLIBRARY,
             saveToPhotoAlbum: false,
             mediaType: MediaType.VIDEO,
+
         };
         const videoPath = (await this.camera.getPicture(options)) as string;
         let currentName: string;

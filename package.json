@@ -8,6 +8,7 @@
     "start": "ng serve",
     "build": "ng build",
     "build:android": "ionic cordova build android",
+    "add:ios": "ionic cordova platform add ios",
     "build:ios": "ionic cordova build ios --debug --verbose --source-map",
     "run:ios": "ionic cordova run ios --livereload --external --verbose",
     "run:ios:device": "ionic cordova run ios --device",

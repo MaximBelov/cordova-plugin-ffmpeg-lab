@@ -1,6 +1,7 @@
 {
   "ios": {
     "debug": {
+      "developmentTeam": "GF3B722BQU",
       "buildFlag":  ["-UseModernBuildSystem=0","-quiet"]
     },
     "release": {
