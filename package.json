@@ -81,7 +81,7 @@
         "ANDROIDX_CORE_VERSION": "1.6.+"
       },
       "cordova-plugin-advanced-imagepicker": {
-        "ANDROID_IMAGE_PICKER_VERSION": "1.2.8"
+        "ANDROID_IMAGE_PICKER_VERSION": "1.3.2"
       }
     },
     "platforms": [
