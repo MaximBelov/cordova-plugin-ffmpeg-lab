@@ -169,6 +169,7 @@ export class HomePage {
         }
     }
 
+    // https://superuser.com/questions/1155186/convert-mov-video-to-mp4-with-ffmpeg
     private async encodeVideo(inputFilePath: string, outputFilePath: string) {
         try {
             const command = [
@@ -176,7 +177,11 @@ export class HomePage {
                 '-vcodec libx264',
                 '-preset veryfast',
                 '-vf scale=w=1280:h=1280:force_original_aspect_ratio=decrease',
-                '-movflags faststart',
+                '-pix_fmt yuv420p',
+                '-c:a aac',
+                '-ss 00:00',
+                '-to 00:30',
+                '-movflags +faststart',
                 outputFilePath,
             ].join(' ');
             await this.ffMpeg.exec(command);
