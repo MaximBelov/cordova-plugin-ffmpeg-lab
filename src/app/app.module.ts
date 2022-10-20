@@ -11,6 +11,7 @@ import { Camera } from '@awesome-cordova-plugins/camera/ngx';
 
 import {FFMpeg} from 'awesome-cordova-plugins-ffmpeg/ngx';
 import {Chooser} from 'awesome-cordova-plugins-chooser/ngx';
+import {AdvancedImagePicker} from 'awesome-cordova-plugins-advanced-image-picker/ngx';
 
 import {AppComponent} from './app.component';
 import {AppRoutingModule} from './app-routing.module';
@@ -28,6 +29,7 @@ import {AppRoutingModule} from './app-routing.module';
         File,
         WebView,
         Camera,
+        AdvancedImagePicker,
         {provide: RouteReuseStrategy, useClass: IonicRouteStrategy}
     ],
     bootstrap: [AppComponent]

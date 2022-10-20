@@ -6,6 +6,7 @@ import { WebView } from '@awesome-cordova-plugins/ionic-webview/ngx';
 import { Camera, CameraOptions, PictureSourceType, MediaType } from '@awesome-cordova-plugins/camera/ngx';
 import { Chooser } from 'awesome-cordova-plugins-chooser/ngx';
 import { FFMpeg, VideoInformation } from 'awesome-cordova-plugins-ffmpeg/ngx';
+import {AdvancedImagePicker} from 'awesome-cordova-plugins-advanced-image-picker/ngx';
 
 @Component({
     selector: 'app-home',
@@ -31,6 +32,7 @@ export class HomePage {
     private readonly camera = this.injector.get(Camera);
     private readonly sanitizer = this.injector.get(DomSanitizer);
     private readonly changeDetectorRef = this.injector.get(ChangeDetectorRef);
+    private readonly advancedImagePicker = this.injector.get(AdvancedImagePicker);
 
     constructor(private injector: Injector) {
         this.platform
@@ -46,10 +48,7 @@ export class HomePage {
             });
     }
 
-    /**
-     * Chooser
-     */
-    async selectAndProbeVideo() {
+    async chooserAndProbe() {
         const videoFileEntry = await this.getVideoFile(10000000 * 10, this.videoMimeTypes);
         if (!videoFileEntry) {
             return;
@@ -63,33 +62,17 @@ export class HomePage {
         }
     }
 
-    /**
-     * Chooser
-     */
-    async selectAndEncodeVideo() {
+    async chooserAndExec() {
         const videoFileEntry = await this.getVideoFile(10000000 * 10, this.videoMimeTypes);
         if (!videoFileEntry) {
             return;
         }
         const { inputFilePath, outputFilePath } = videoFileEntry;
-        const loader = await this.loadingController.create({ id: 'ffmpeg' });
-        await loader.present();
-        await this.encodeVideo(inputFilePath, outputFilePath)
-        await this.loadingController.dismiss(null, null, 'ffmpeg');
-        this.showVideoPreview = false;
-
-        this.encodedSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.webview.convertFileSrc(outputFilePath)
-        )
-        this.changeDetectorRef.detectChanges();
-        this.showVideoPreview = true;
+        await this.encodeAndUpdatePreview(inputFilePath, outputFilePath);
     }
 
-    /**
-     * Camera
-     */
-    async selectFromGalleryAndProbeVideo() {
-        const videoFileEntry = await this.getVideoFromGallery();
+    async cameraAndProbe() {
+        const videoFileEntry = await this.getVideoFromCamera();
         if (!videoFileEntry) {
             return;
         }
@@ -100,28 +83,63 @@ export class HomePage {
         }
     }
 
-    /**
-     * Camera
-     */
-    async selectFromGalleryAndEncodeVideo() {
-        const videoFileEntry = await this.getVideoFromGallery();
+    async cameraAndExec() {
+        const videoFileEntry = await this.getVideoFromCamera();
         if (!videoFileEntry) {
             return;
         }
-        const loader = await this.loadingController.create({ id: 'ffmpeg' });
-        await loader.present();
-        this.showVideoPreview = false;
-        await this.encodeVideo(videoFileEntry.inputFilePath, videoFileEntry.outputFilePath)
-        await this.loadingController.dismiss(null, null, 'ffmpeg');
-        this.encodedSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
-            this.webview.convertFileSrc(videoFileEntry.outputFilePath)
-        );
-        this.changeDetectorRef.detectChanges();
-        this.showVideoPreview = true;
-
+        const { inputFilePath, outputFilePath } = videoFileEntry
+        await this.encodeAndUpdatePreview(inputFilePath, outputFilePath);
     }
 
-    private async getVideoFromGallery() {
+    async advancedImagePickerAndProbe(){
+        const result = await this.advancedImagePicker.present({
+            mediaType: 'VIDEO',
+            min: 1,
+            max: 1,
+            asJpeg: true
+        });
+        if (!result.length) {
+            return;
+        }
+        const { src } = result[0];
+
+        try {
+            this.videoInformation = await this.ffMpeg.probe(src);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async advancedImagePickerAndEncode(){
+        const result = await this.advancedImagePicker.present({
+            mediaType: 'VIDEO',
+            min: 1,
+            max: 1,
+            asJpeg: true
+        });
+        if (!result.length) {
+            return;
+        }
+        const { src: inputFilePath } = result[0];
+        const outputFilePath = `${this.tempDirectory}${new Date().getTime()}.mp4`;
+        await this.encodeAndUpdatePreview(inputFilePath, outputFilePath);
+    }
+
+    private async encodeAndUpdatePreview(inputFilePath, outputFilePath,){
+        const loader = await this.loadingController.create({ id: 'ffmpeg' });
+        await loader.present();
+        await this.encodeVideo(inputFilePath, outputFilePath)
+        await this.loadingController.dismiss(null, null, 'ffmpeg');
+        this.showVideoPreview = false;
+        this.encodedSrc = this.sanitizer.bypassSecurityTrustResourceUrl(
+            this.webview.convertFileSrc(outputFilePath)
+        )
+        this.changeDetectorRef.detectChanges();
+        this.showVideoPreview = true;
+    }
+
+    private async getVideoFromCamera() {
         const options: CameraOptions = {
             sourceType: PictureSourceType.PHOTOLIBRARY,
             saveToPhotoAlbum: false,

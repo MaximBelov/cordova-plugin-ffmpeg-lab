@@ -7,21 +7,30 @@
 </ion-header>
 
 <ion-content>
-    <ion-button (click)="selectAndEncodeVideo()">
-        <ion-label>Test exec</ion-label>
+    <ion-button (click)="chooserAndProbe()">
+        <ion-label>chooser and probe</ion-label>
     </ion-button>
 
-    <ion-button (click)="selectAndProbeVideo()">
-        <ion-label>Test probe</ion-label>
+    <ion-button (click)="chooserAndExec()">
+        <ion-label>chooser and exec</ion-label>
     </ion-button>
 
-    <ion-button (click)="selectFromGalleryAndEncodeVideo()">
-        <ion-label>Test exec from gallery</ion-label>
+    <ion-button (click)="cameraAndProbe()">
+        <ion-label>camera and probe</ion-label>
     </ion-button>
 
-    <ion-button (click)="selectFromGalleryAndProbeVideo()">
-        <ion-label>Test probe from gallery</ion-label>
+    <ion-button (click)="cameraAndExec()">
+        <ion-label>camera and exec</ion-label>
     </ion-button>
+
+    <ion-button (click)="advancedImagePickerAndProbe()">
+        <ion-label>advanced image picker and probe</ion-label>
+    </ion-button>
+
+    <ion-button (click)="advancedImagePickerAndEncode()">
+        <ion-label>advanced image picker and exec</ion-label>
+    </ion-button>
+
 
     <!--  <picture>-->
     <!--    <source srcset="assets/Free_Test_Data.mp4" type="video/mp4">-->
